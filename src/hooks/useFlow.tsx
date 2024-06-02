@@ -76,10 +76,20 @@ export const useFlow = () => {
         if (targetId) {
           // now we can create a connection to the drop target node
           createConnection(targetId);
+        } else {
+          const id = nanoid();
+
+          const targetNode: Node<NodeData> = {
+            id,
+            data: { label: `Node ${id}` },
+            position: { x: 0, y: 0 }, // no need to pass a position as it is computed by the layout hook
+            type: "custom",
+          };
+          setNodes((nodes) => nodes.concat([targetNode]));
         }
       }
     },
-    [createConnection]
+    [createConnection, setNodes]
   );
 
   // this function is called when a node in the graph is clicked
