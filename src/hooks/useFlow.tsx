@@ -41,7 +41,7 @@ export const useFlow = () => {
   const createConnection = useCallback(
     (sourceId: string) => {
       // create an incremental ID based on the number of elements already in the graph
-      const targetId: string = `${nodes.length + 1}`;
+      // const targetId: string = `${nodes.length + 1}`;
       const id = nanoid();
 
       const targetNode: Node<NodeData> = {
@@ -60,7 +60,7 @@ export const useFlow = () => {
       setNodes((nodes) => nodes.concat([targetNode]));
       setEdges((edges) => edges.concat([connectingEdge]));
     },
-    [nodes.length, setEdges, setNodes]
+    [setEdges, setNodes]
   );
 
   // this function is called once the node from the sidebar is dropped onto a node in the current graph

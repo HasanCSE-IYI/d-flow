@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import ELK from 'elkjs/lib/elk.bundled.js'
 import {
   Edge,
@@ -22,27 +22,30 @@ const layoutOptions = {
 
 const elk = new ELK()
 
-export const getLayoutedNodes = async (nodes: Node[], edges: Edge[]) => {
+export const getLayoutedNodes = async (
+  nodes: Node[],
+  edges: Edge[],
+  options: { [key: string]: any } = {}
+) => {
+  const isHorizontal = options["elk.direction"] === "RIGHT";
   const graph = {
-    id: 'root',
-    layoutOptions,
-    children: nodes.map((n) => {
-      return {
-        ...n,
-        width: n.width ?? 150,
-        height: n.height ?? 50,
-        targetPosition: 'left',
-        sourcePosition: 'right',
-      }
-    }),
+    id: "root",
+    layoutOptions: options,
+    children: nodes.map((node) => ({
+      ...node,
+      targetPosition: isHorizontal ? "left" : "top",
+      sourcePosition: isHorizontal ? "right" : "bottom",
+      width: 150,
+      height: 50,
+    })),
     edges: cloneDeep(edges),
-  }
+  };
 
-  const layoutedGraph = await elk.layout(graph as any)
+  const layoutedGraph = await elk.layout(graph as any);
   const layoutedNodes = nodes.map((node) => {
     const layoutedNode = layoutedGraph.children?.find(
-      lgNode => lgNode.id === node.id,
-    )
+      (lgNode) => lgNode.id === node.id
+    );
 
     return {
       ...node,
@@ -50,22 +53,23 @@ export const getLayoutedNodes = async (nodes: Node[], edges: Edge[]) => {
         x: (layoutedNode?.x ?? 0) + AUTO_LAYOUT_OFFSET.x,
         y: (layoutedNode?.y ?? 0) + AUTO_LAYOUT_OFFSET.y,
       },
-    }
-  })
+    };
+  });
 
   return {
     layoutedNodes,
-  }
-}
+  };
+};
 
 export const useNodesLayout = () => {
   const store = useStoreApi()
   const reactflow = useReactFlow()
 
 
-  const handleNodesLayout = useCallback(async () => {
+  const handleNodesLayout = useEffect( () => {
   
-    const {
+  const handleNodes =async () => {
+     const {
       getNodes,
       edges,
       setNodes,
@@ -83,6 +87,10 @@ export const useNodesLayout = () => {
       y: 0,
       zoom,
     })
+    
+   }
+
+   handleNodes()
    
   }, [store, reactflow, ])
 
