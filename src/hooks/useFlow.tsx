@@ -1,13 +1,22 @@
 import CustomNode from "@/components/nodes/custom-node";
 import { nanoid } from "nanoid";
-import { DragEvent, DragEventHandler, MouseEvent, useCallback } from "react";
+import {
+  DragEvent,
+  DragEventHandler,
+  MouseEvent,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import {
   Edge,
   Node,
   NodeMouseHandler,
   NodeTypes,
+  ReactFlowInstance,
   useEdgesState,
   useNodesState,
+  useReactFlow,
 } from "reactflow";
 
 export const initialNodes: Node[] = [
@@ -37,7 +46,15 @@ const nodeTypes: NodeTypes = {
 export const useFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { getNode, getEdges, screenToFlowPosition } = useReactFlow();
+  const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
+  const [reactFlowInstance, setReactFlowInstance] =
+    useState<ReactFlowInstance | null>(null);
 
+  const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }, []);
   const createConnection = useCallback(
     (sourceId: string) => {
       // create an incremental ID based on the number of elements already in the graph
@@ -63,33 +80,41 @@ export const useFlow = () => {
     [setEdges, setNodes]
   );
 
+  const reactFlowBounds: any =
+    reactFlowWrapper?.current?.getBoundingClientRect();
+
   // this function is called once the node from the sidebar is dropped onto a node in the current graph
   const onDrop: DragEventHandler = useCallback(
     (evt: DragEvent<HTMLDivElement>) => {
       // make sure that the event target is a DOM element
+      const position = screenToFlowPosition({
+        x: evt.clientX,
+        y: evt.clientY,
+      }) || { x: 0, y: 0 };
+      console.log({ position });
       if (evt.target instanceof Element) {
         // from the target element search for the node wrapper element which has the node id as attribute
         const targetId = evt.target
           .closest(".react-flow__node")
           ?.getAttribute("data-id");
-
-        if (targetId) {
+        console.log({ targetId });
+        if (!targetId) {
           // now we can create a connection to the drop target node
-          createConnection(targetId);
-        } else {
           const id = nanoid();
-
+          if (!position) return;
           const targetNode: Node<NodeData> = {
             id,
             data: { label: `Node ${id}` },
-            position: { x: 0, y: 0 }, // no need to pass a position as it is computed by the layout hook
+            position,
             type: "custom",
           };
           setNodes((nodes) => nodes.concat([targetNode]));
+        } else {
+          createConnection(targetId);
         }
       }
     },
-    [createConnection, setNodes]
+    [createConnection, reactFlowInstance, setNodes]
   );
 
   // this function is called when a node in the graph is clicked
@@ -102,14 +127,6 @@ export const useFlow = () => {
     // on click, we want to add create a new node connection the clicked node
     createConnection(node.id);
   };
-
-  const onDragOver: DragEventHandler = useCallback(
-    (evt: DragEvent<HTMLDivElement>) => {
-      evt.preventDefault();
-      evt.dataTransfer.dropEffect = "move";
-    },
-    []
-  );
 
   return {
     nodes,

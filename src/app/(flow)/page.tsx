@@ -38,6 +38,7 @@ export default function App() {
     onNodeClick,
     onDrop,
     onDragOver,
+  
   } = useFlow();
   console.log({ nodes, edges });
 
@@ -60,7 +61,7 @@ export default function App() {
         fitView
         onDrop={onDrop}
         onDragOver={onDragOver}
-        nodeOrigin={[0.5, 0.5]}
+      
         // onNodeClick={onNodeClick}
         // newly added edges get these options automatically
         defaultEdgeOptions={defaultEdgeOptions}
