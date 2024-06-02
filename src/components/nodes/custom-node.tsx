@@ -1,10 +1,7 @@
-
-"use client"
-import React, { useState, DragEvent } from 'react';
-import { Handle, NodeProps, Position } from 'reactflow';
-import cx from 'classnames';
-
-
+"use client";
+import cx from "classnames";
+import { DragEvent, memo, useState } from "react";
+import { Handle, NodeProps, Position } from "reactflow";
 
 function CustomNode({ data, sourcePosition, targetPosition }: NodeProps) {
   const [isDropzoneActive, setDropzoneActive] = useState<boolean>(false);
@@ -35,12 +32,19 @@ function CustomNode({ data, sourcePosition, targetPosition }: NodeProps) {
       onDragEnter={onDragEnter}
       onDragLeave={onDragLeave}
     >
-      
-      <Handle className={"handle"} type="target" position={targetPosition || Position.Top} />
-      <Handle className={"handle"} type="source" position={sourcePosition || Position.Bottom} />
+      <Handle
+        className={"handle"}
+        type="target"
+        position={targetPosition || Position.Top}
+      />
+      <Handle
+        className={"handle"}
+        type="source"
+        position={sourcePosition || Position.Bottom}
+      />
       {data.label}
     </div>
   );
 }
 
-export default CustomNode;
+export default memo(CustomNode);
