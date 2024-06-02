@@ -1,9 +1,17 @@
 "use client";
 
-import { useNodesLayout } from "@/helper/useLayout";
 import { useFlow } from "@/hooks/useFlow";
+import { useCallback } from "react";
 
-import ReactFlow, { Background, Controls, MarkerType, MiniMap } from "reactflow";
+import ReactFlow, {
+  Background,
+  Connection,
+  Controls,
+  Edge,
+  MarkerType,
+  MiniMap,
+  addEdge,
+} from "reactflow";
 
 import "reactflow/dist/style.css";
 
@@ -14,7 +22,7 @@ const proOptions = {
 
 const defaultEdgeOptions = {
   type: "smoothstep",
-  markerEnd: { type: MarkerType.ArrowClosed },
+  markerEnd: { type: MarkerType.Arrow },
   pathOptions: { offset: 5 },
 };
 
@@ -33,14 +41,18 @@ export default function App() {
   } = useFlow();
   console.log({ nodes, edges });
 
-  useNodesLayout();
+  // useNodesLayout();
+
+  const onConnect = useCallback(
+    (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
 
   return (
     <div style={{ height: "100vh" }} className="w-full">
       <ReactFlow
         proOptions={proOptions}
         nodeTypes={nodeTypes}
-        
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
@@ -48,13 +60,15 @@ export default function App() {
         fitView
         onDrop={onDrop}
         onDragOver={onDragOver}
-        onNodeClick={onNodeClick}
+        nodeOrigin={[0.5, 0.5]}
+        // onNodeClick={onNodeClick}
         // newly added edges get these options automatically
         defaultEdgeOptions={defaultEdgeOptions}
+        onConnect={onConnect}
       >
         <Controls />
         <MiniMap />
-        <Background  gap={12} size={1} />
+        <Background gap={12} size={1} />
       </ReactFlow>
     </div>
   );
