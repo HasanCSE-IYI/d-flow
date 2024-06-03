@@ -61,7 +61,6 @@ export default function App() {
         fitView
         onDrop={onDrop}
         onDragOver={onDragOver}
-      
         // onNodeClick={onNodeClick}
         // newly added edges get these options automatically
         defaultEdgeOptions={defaultEdgeOptions}
