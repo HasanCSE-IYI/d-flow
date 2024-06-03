@@ -24,8 +24,18 @@ const proOptions = {
 
 const defaultEdgeOptions = {
   type: "simplebezier",
-  markerEnd: { type: MarkerType.Arrow },
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    width: 20,
+    height: 20,
+    color: "#FF0072",
+  },
   pathOptions: { offset: 5 },
+  // label: "marker size and color",
+  style: {
+    strokeWidth: 2,
+    stroke: "#FF0072",
+  },
 };
 
 export default function App() {
@@ -47,17 +57,24 @@ export default function App() {
   // useNodesLayout();
 
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((eds) => {
-      const edge:Edge = {
-        ...params,
-        id: nanoid(),
-        type: EdgeType.BRIDGE,
-       
-        target: params.target as string,
-        source: params.source as string,
-      }
-     return  addEdge(edge , eds)
-    }),
+    (params: Edge | Connection) =>
+      setEdges((eds) => {
+        const edge: Edge = {
+          ...params,
+          id: nanoid(),
+          type: EdgeType.BRIDGE,
+          animated: true,
+          style: {
+            stroke: "#f36",
+            strokeWidth: 1,
+            strokeOpacity: 1,
+          },
+
+          target: params.target as string,
+          source: params.source as string,
+        };
+        return addEdge(edge, eds);
+      }),
     [setEdges]
   );
 
