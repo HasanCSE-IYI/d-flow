@@ -1,3 +1,4 @@
+import BridgeEdge from "@/components/edges/bridge";
 import CustomNode from "@/components/nodes/custom-node";
 import { nanoid } from "nanoid";
 import {
@@ -5,6 +6,7 @@ import {
   DragEventHandler,
   MouseEvent,
   useCallback,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -50,7 +52,9 @@ export const useFlow = () => {
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
-
+const edgeTypes = useMemo(()=>({
+  bridge: BridgeEdge,
+}),[])
   const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
@@ -138,5 +142,6 @@ export const useFlow = () => {
     onNodeClick,
     nodeTypes,
     onDragOver,
+    edgeTypes
   };
 };
