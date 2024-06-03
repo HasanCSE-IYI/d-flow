@@ -80,8 +80,7 @@ export const useFlow = () => {
     [setEdges, setNodes]
   );
 
-  const reactFlowBounds: any =
-    reactFlowWrapper?.current?.getBoundingClientRect();
+
 
   // this function is called once the node from the sidebar is dropped onto a node in the current graph
   const onDrop: DragEventHandler = useCallback(
@@ -114,7 +113,7 @@ export const useFlow = () => {
         }
       }
     },
-    [createConnection, reactFlowInstance, setNodes]
+    [createConnection, screenToFlowPosition, setNodes]
   );
 
   // this function is called when a node in the graph is clicked
