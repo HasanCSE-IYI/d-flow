@@ -42,6 +42,16 @@ function CustomNode({ data, sourcePosition, targetPosition }: NodeProps) {
         type="source"
         position={sourcePosition || Position.Bottom}
       />
+      <Handle
+        className={"handle"}
+        type="source"
+        position={sourcePosition || Position.Left}
+      />
+      <Handle
+        className={"handle"}
+        type="source"
+        position={sourcePosition || Position.Right}
+      />
       {data.label}
     </div>
   );
