@@ -1,6 +1,8 @@
 "use client";
 
 import { useFlow } from "@/hooks/useFlow";
+import { EdgeType } from "@/types";
+import { nanoid } from "nanoid";
 import { useCallback } from "react";
 
 import ReactFlow, {
@@ -21,7 +23,7 @@ const proOptions = {
 };
 
 const defaultEdgeOptions = {
-  type: "smoothstep",
+  type: "simplebezier",
   markerEnd: { type: MarkerType.Arrow },
   pathOptions: { offset: 5 },
 };
@@ -36,16 +38,26 @@ export default function App() {
     nodeTypes,
     setEdges,
     onNodeClick,
+    edgeTypes,
     onDrop,
     onDragOver,
-  
   } = useFlow();
   console.log({ nodes, edges });
 
   // useNodesLayout();
 
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Edge | Connection) => setEdges((eds) => {
+      const edge:Edge = {
+        ...params,
+        id: nanoid(),
+        type: EdgeType.BRIDGE,
+       
+        target: params.target as string,
+        source: params.source as string,
+      }
+     return  addEdge(edge , eds)
+    }),
     [setEdges]
   );
 
@@ -54,6 +66,7 @@ export default function App() {
       <ReactFlow
         proOptions={proOptions}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
