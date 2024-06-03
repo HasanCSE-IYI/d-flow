@@ -27,7 +27,7 @@
 
 .handle {
   pointer-events: none;
-  opacity: 0;
+  /* opacity: 7%; */
 }
 
 .sidebar {
@@ -36,7 +36,7 @@
   left: 5px;
   z-index: 1000;
   padding: 10px;
-  border-right: 1px solid #222138;
+  border-right: 1px solid #b2478f;
   width: 120px;
   flex-grow: 0;
   flex-shrink: 0;
@@ -55,8 +55,32 @@
   border-radius: 8px;
   cursor: pointer;
   margin-bottom: 10px;
+  border-color: chocolate;
 }
 
 .sidebarNode:hover {
   box-shadow: rgba(0, 0, 0, 0.533) 0px 0px 9px 0px;
+}
+
+.react-flow__handle-left,
+.react-flow__handle-right {
+  @apply !h-4 !w-2;
+}
+
+.react-flow__handle-top {
+  @apply !h-2 !w-2;
+}
+
+.react-flow__handle-bottom {
+  @apply !h-2 !w-2;
+}
+.react-flow__handle-bottom {
+  bottom: -8px !important;
+}
+.react-flow__handle-top {
+  top: -8px !important;
+}
+
+.react-flow__handle {
+  @apply !rounded !bg-gray-900;
 }
